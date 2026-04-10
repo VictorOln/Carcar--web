@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Topbar from "./components/Topbar";
 import AlertCards from "./components/AlertCards";
+import { FiZap, FiClock, FiAlertTriangle, FiCheckCircle } from "react-icons/fi";
 
 function App() {
   const [stats, setStats] = useState({
@@ -19,40 +20,48 @@ function App() {
           Painel de controle
         </h2>
 
-        {/* Grid que organiza os cards */}
+        {/* Grid que organiza os cards - Removi o texto que estava quebrando o layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AlertCards
-            title="Total de Alertas"
+            title="TOTAL ALERTAS"
             value={stats.total}
-            icon="🚨"
-            colorClass="bg-orange-500/10 text-orange-500"
+            icon={<FiZap className="text-orange-500" />}
+            subtitle="Total de alertas"
+            subtitleColor="text-orange-500"
+            borderColor="border-orange-500/50 shadow-orange-500/10"
           />
 
           <AlertCards
-            title="Pendentes"
+            title="PENDENTES"
             value={stats.pendentes}
-            icon="⏳"
-            colorClass="bg-yellow-500/10 text-yellow-500"
+            icon={<FiClock className="text-yellow-500" />}
+            subtitle="Aguardando verificação"
+            subtitleColor="text-yellow-500"
+            borderColor="border-yellow-500/50 shadow-yellow-500/10"
           />
 
           <AlertCards
-            title="Verificados"
+            title="VERIFICADOS"
             value={stats.verificados}
-            icon="✔️"
-            colorClass="bg-blue-500/10 text-blue-500"
+            icon={<FiAlertTriangle className="text-red-500" />}
+            subtitle="Focos confirmados"
+            subtitleColor="text-red-500"
+            borderColor="border-red-500/50 shadow-red-500/10"
           />
 
           <AlertCards
-            title="Resolvidos"
+            title="RESOLVIDOS"
             value={stats.resolvidos}
-            icon="🌿"
-            colorClass="bg-green-500/10 text-green-500"
+            icon={<FiCheckCircle className="text-green-500" />}
+            subtitle="Controlados com sucesso"
+            subtitleColor="text-green-500"
+            borderColor="border-green-500/50 shadow-green-500/10"
           />
         </div>
 
-        {/* Espaço para a Tabela e o Mapa que faremos depois */}
+        {/* Espaço para a Tabela e o Mapa */}
         <div className="mt-10 text-zinc-600 text-sm italic border-t border-white/5 pt-4">
-          Próximos passos: Lista de Alertas Recentes e Mapa de Foco...
+          
         </div>
       </main>
     </div>

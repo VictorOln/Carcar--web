@@ -6,18 +6,18 @@ export default function Topbar() {
   // O padrão começa no 'Painel'
   const [activeTab, setActiveTab] = useState("Painel");
 
-  // Uma lista com os nomes dos nossos menus
+  // Uma lista com os nomes dos menus
   const menus = ["Painel", "Alertas", "Mapas", "Configurações"];
 
   return (
-    <nav className="flex items-center justify-between px-8 h-27 bg-[#1A1A1A] border-b border-white/5 sticky top-0 z-[1000]">
-      {/* ESQUERDA: Identidade */}
+    <nav className="flex items-center justify-between px-8 h-27 bg-[#313131] border-b border-white/5 sticky top-0 z-[1000]">
+   
       <div className="flex items-center gap-3">
         <img src={logoImg} alt="Logo" className="h-20 w-auto" />
       </div>
 
-      {/* CENTRO: Menu Estilizado  */}
-      <div className="flex bg-[#242424] p-1.5 rounded-full border border-white/5">
+      {/*Menu*/}
+      <div className="flex bg-[#313131] p-1.5 rounded-full border border-white/5">
         {menus.map((menu) => (
           <button
             key={menu}
@@ -36,7 +36,7 @@ export default function Topbar() {
         ))}
       </div>
 
-      {/* DIREITA: Perfil (Vamos deixar engatilhado) */}
+      {/* Perfil que coloquei só pra representar, no futuro eu vou mexer ainda*/}
       <div className="flex items-center gap-6">
         <button className="text-zinc-400 hover:text-orange-500 transition-colors"></button>
         <div className="h-8 w-[1px] bg-zinc-800"></div>

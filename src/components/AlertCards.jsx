@@ -1,15 +1,19 @@
-export default function AlertCards({ title, value, icon, colorClass }) {
+export default function AlertCards({ title, value, icon, subtitle, subtitleColor, borderColor }) {
   return (
-    <div className="bg-[#1A1A1A] border border-white/5 p-6 rounded-2xl flex items-center justify-between">
-      <div>
-        <p className="text-zinc-500 text-sm font-medium mb-1">{title}</p>
-        <h3 className="text-white text-3xl font-bold">{value}</h3>
+  
+    <div className={`bg-[#313131] p-6 rounded-2xl flex flex-col justify-between h-40 border-b-2 transition-all shadow-lg ${borderColor}`}>
+      
+      <div className="flex items-center justify-between">
+        <p className="text-zinc-400 text-[11px] font-bold uppercase tracking-widest">{title}</p>
+        <div className="text-xl opacity-80">
+          {icon}
+        </div>
       </div>
 
-      <div
-        className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${colorClass}`}
-      >
-        {icon}
+      <h3 className="text-white text-5xl font-bold tracking-tight">{value}</h3>
+
+      <div className={`flex items-center gap-2 text-[11px] font-medium ${subtitleColor}`}>
+        {subtitle}
       </div>
     </div>
   );
