@@ -1,30 +1,74 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import Topbar from "./components/Topbar";
 import Dashboard from "./pages/Dashboard";
-import PageMapas from "./pages/Mapas";
-import PageAlertas from "./pages/Alertas";
-import PageConfig from "./pages/Configuracoes";
-import { MOCK_STATS, MOCK_FOCOS, MOCK_ALERTAS_RECENTES } from "./mocks/data";
+import Alertas from "./pages/Alertas";
+import DetalhesAlerta from "./pages/DetalhesAlerta";
+import Mapas from "./pages/Mapas"; // IMPORTANTE: Importar a nova página
+import PageTransition from "./components/PageTransition";
+
+import { MOCK_STATS as stats, alertasRecebidos, MOCK_FOCOS } from "./mocks/data";
 
 export default function App() {
   const [activePage, setActivePage] = useState("Painel");
+  const [alertaSelecionado, setAlertaSelecionado] = useState(null);
+
+  const navegar = (page) => {
+    setActivePage(page);
+    setAlertaSelecionado(null);
+  };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-zinc-300">
-      <Topbar activePage={activePage} onNavigate={setActivePage} />
+    <div className="min-h-screen bg-[#1A1A1A] text-white selection:bg-orange-500/30">
+      <Topbar activePage={activePage} onNavigate={navegar} />
 
-      <main className="max-w-[1440px] mx-auto">
-        {activePage === "Painel" && (
-          <Dashboard
-            stats={MOCK_STATS}
-            focos={MOCK_FOCOS}
-            alertasRecentes={MOCK_ALERTAS_RECENTES}
-            onNavigate={setActivePage}
-          />
-        )}
-        {activePage === "Mapas" && <PageMapas focos={MOCK_FOCOS} />}
-        {activePage === "Alertas" && <PageAlertas focos={MOCK_FOCOS} />}
-        {activePage === "Configurações" && <PageConfig />}
+      <main>
+        <AnimatePresence mode="wait">
+          {/* DASHBOARD */}
+          {activePage === "Painel" && (
+            <PageTransition key="painel">
+              <Dashboard 
+                stats={stats} 
+                focos={MOCK_FOCOS} 
+                alertasRecentes={alertasRecebidos} 
+                onNavigate={navegar} 
+              />
+            </PageTransition>
+          )}
+
+          {/* LISTAGEM DE ALERTAS */}
+          {activePage === "Alertas" && !alertaSelecionado && (
+            <PageTransition key="lista">
+              <Alertas onSelecionarAlerta={(id) => setAlertaSelecionado(id)} />
+            </PageTransition>
+          )}
+
+          {/* DETALHES DO FOCO */}
+          {alertaSelecionado && (
+            <PageTransition key="detalhes">
+              <DetalhesAlerta 
+                alertaId={alertaSelecionado} 
+                onVoltar={() => setAlertaSelecionado(null)} 
+              />
+            </PageTransition>
+          )}
+
+          {/* PÁGINA DE MAPAS (ADICIONE ESSE BLOCO AQUI) */}
+          {activePage === "Mapas" && (
+            <PageTransition key="mapas">
+              <Mapas />
+            </PageTransition>
+          )}
+
+          {/* PÁGINA DE CONFIGURAÇÕES (Placeholder por enquanto) */}
+          {activePage === "Configurações" && (
+            <PageTransition key="configs">
+              <div className="flex items-center justify-center h-[80vh]">
+                 <h1 className="text-zinc-600 font-black text-4xl uppercase italic">Em construção...</h1>
+              </div>
+            </PageTransition>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
