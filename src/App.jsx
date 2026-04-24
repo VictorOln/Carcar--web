@@ -64,7 +64,7 @@ export default function App() {
           {activePage === "Configurações" && (
             <PageTransition key="configs">
               <div className="flex items-center justify-center h-[80vh]">
-                 <h1 className="text-zinc-600 font-black text-4xl uppercase italic">Em construção...</h1>
+                 <h1 className="text-zinc-600 font-black text-4xl uppercase italic"></h1>
               </div>
             </PageTransition>
           )}
