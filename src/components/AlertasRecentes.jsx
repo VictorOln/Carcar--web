@@ -1,6 +1,7 @@
 import { FiMapPin } from "react-icons/fi";
+import StatusBadge from "./StatusBadge";
 
-export default function AlertasRecentes({ onVerTodos, alertas }) {
+export default function AlertasRecentes({ onVerTodos, alertas, onSelecionarAlerta }) {
   return (
     <div className="bg-[#313131] rounded-2xl border border-white/5 overflow-hidden shadow-xl">
       <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
@@ -10,7 +11,11 @@ export default function AlertasRecentes({ onVerTodos, alertas }) {
 
       <div className="p-4 space-y-3">
         {alertas.map((alerta) => (
-          <div key={alerta.id} className="bg-[#262626] p-4 rounded-xl border border-white/5 flex items-center justify-between group hover:border-orange-500/30 transition-all">
+          <div 
+            key={alerta.id} 
+            onClick={() => onSelecionarAlerta && onSelecionarAlerta(alerta.id)}
+            className="bg-[#262626] p-4 rounded-xl border border-white/5 flex items-center justify-between group hover:border-orange-500/30 transition-all cursor-pointer"
+          >
             <div className="flex flex-col gap-1">
               <span className="text-zinc-500 text-[10px] font-bold uppercase">{alerta.tempo || "Aguardando atualização"}</span>
               <div className="flex items-center gap-2 text-white">
@@ -20,12 +25,7 @@ export default function AlertasRecentes({ onVerTodos, alertas }) {
               <span className="text-zinc-500 text-[10px] font-medium">{alerta.usuario || "Victor Oliveira"}</span>
             </div>
 
-            <div className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-              alerta.status === 'CONFIRMADO' ? 'bg-red-600 text-white' : 
-              alerta.status === 'PENDENTE' ? 'bg-yellow-500 text-black' : 'bg-green-600 text-white'
-            }`}>
-              {alerta.status}
-            </div>
+            <StatusBadge status={alerta.status} />
           </div>
         ))}
       </div>

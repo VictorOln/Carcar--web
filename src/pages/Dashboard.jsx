@@ -8,6 +8,7 @@ export default function Dashboard({
   focos,
   alertasRecentes,
   onNavigate,
+  onSelecionarAlerta,
 }) {
   return (
     <div className="px-8 py-10 space-y-8">
@@ -51,12 +52,17 @@ export default function Dashboard({
         <AlertasRecentes
           alertas={alertasRecentes}
           onVerTodos={() => onNavigate("Alertas")}
+          onSelecionarAlerta={onSelecionarAlerta}
         />
       </div>
 
       {/* 3. Seção do Mapa (Abaixo dos alertas, também horizontal) */}
       <div className="w-full">
-        <MapaFoco focos={focos} onExpandir={() => onNavigate("Mapas")} />
+        <MapaFoco 
+          focos={focos} 
+          onExpandir={() => onNavigate("Mapas")} 
+          onSelecionarAlerta={onSelecionarAlerta}
+        />
       </div>
     </div>
   );

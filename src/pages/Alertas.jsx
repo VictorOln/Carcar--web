@@ -1,22 +1,37 @@
+// ==========================================
+// PÁGINA de ALERTAS - CENTRAL DE COMANDO
+// ==========================================
+// Onde a gente filtra o que é real e o que é erro.
+// Lógica de filtragem monstra pra não perder tempo! Cuida!
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiSearch, FiUsers } from "react-icons/fi";
-import { alertasRecebidos, filtrosAlertas } from "../mocks/data";
+import { filtrosAlertas } from "../mocks/data";
+import StatusBadge from "../components/StatusBadge";
 
-export default function Alertas({ onSelecionarAlerta }) {
+export default function Alertas({ onSelecionarAlerta, alertas }) {
   const [filtroAtivo, setFiltroAtivo] = useState("Todos");
   const [busca, setBusca] = useState("");
 
-  // LÓGICA DE FILTRAGEM
-  const alertasFiltrados = alertasRecebidos.filter((alerta) => {
-    // 1. Filtro por Categoria (Pills)
-    const bateFiltro =
-      filtroAtivo === "Todos" ||
-      alerta.status.toLowerCase() === filtroAtivo.toLowerCase() ||
-      (filtroAtivo === "Concluídos" && alerta.status === "CONCLUÍDO") ||
-      (filtroAtivo === "Em curso" && alerta.status === "EM CURSO");
+  // Mapeamento de Labels para Status Reais
+  const labelParaStatus = {
+    "Todos": "TODOS",
+    "Confirmados": "CONFIRMADO",
+    "Em curso": "EM_CURSO",
+    "Concluídos": "CONCLUIDO",
+    "Alarme Falso": "FALSO",
+    "Fogo Controlado": "FOGO_CONTROLADO",
+    "Aguardando Revisão": "AGUARDANDO_CONFIRMACAO"
+  };
 
-    // 2. Filtro por Busca (Texto)
+  // LÓGICA DE FILTRAGEM
+  const alertasFiltrados = alertas.filter((alerta) => {
+    const statusDesejado = labelParaStatus[filtroAtivo];
+    
+    const bateFiltro =
+      statusDesejado === "TODOS" || 
+      alerta.status === statusDesejado;
+
     const bateBusca = alerta.titulo.toLowerCase().includes(busca.toLowerCase());
 
     return bateFiltro && bateBusca;
@@ -80,7 +95,13 @@ export default function Alertas({ onSelecionarAlerta }) {
                 onClick={() => onSelecionarAlerta(alerta.id)}
                 className="bg-[#313131] border border-orange-500/10 rounded-2xl p-5 flex items-center gap-6 hover:border-orange-500/40 transition-all cursor-pointer group"
               >
-                <div className="w-24 h-24 bg-[#D9D9D9] rounded-xl shrink-0" />
+                <div className="w-24 h-24 bg-[#D9D9D9] rounded-xl shrink-0 overflow-hidden border border-white/5 shadow-inner">
+                  {alerta.imagem ? (
+                    <img src={alerta.imagem} alt={alerta.titulo} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-black/10 font-black text-[8px] uppercase">Sem Foto</div>
+                  )}
+                </div>
                 <div className="flex flex-col justify-between h-24 py-1 flex-1">
                   <div className="space-y-1">
                     <h3 className="text-white font-black text-lg group-hover:text-orange-500 transition-colors uppercase italic">
@@ -95,11 +116,7 @@ export default function Alertas({ onSelecionarAlerta }) {
                       <FiUsers size={14} className="text-orange-500" />
                       {alerta.relatos} relatos
                     </div>
-                    <span
-                      className={`px-4 py-1 rounded text-[10px] font-black tracking-tighter ${alerta.statusClass}`}
-                    >
-                      {alerta.status}
-                    </span>
+                    <StatusBadge status={alerta.status} />
                   </div>
                 </div>
               </motion.div>

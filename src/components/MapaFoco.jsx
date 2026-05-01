@@ -1,21 +1,44 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
+import { STATUS_CONFIG } from "../constants/status";
 
-// Configuração do ícone de fogo
-const fireIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/785/785116.png",
-  iconSize: [25, 25],
-  iconAnchor: [12, 25],
-  popupAnchor: [0, -25],
-});
+// Função para centralizar o mapa programaticamente
+function ChangeView({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
+}
 
-export default function MapaFoco({ focos = [], onExpandir }) {
-  // Centro padrão em Tianguá
-  const centerTiangua = [-3.7329, -41.0121];
+const getIcon = (status) => {
+  const config = STATUS_CONFIG[status] || { bg: "bg-zinc-500" };
+  return L.divIcon({
+    className: "custom-marker",
+    html: `<div class="w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center ${config.bg} animate-bounce-slow">
+             <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+           </div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+  });
+};
 
+export default function MapaFoco({ 
+  focos = [], 
+  onExpandir, 
+  onSelecionarAlerta,
+  center = [-3.7329, -41.0121], 
+  zoom = 12, 
+  height = "500px",
+  interactive = true 
+}) {
   return (
-    <div className="bg-[#313131] rounded-[24px] border border-orange-500/20 overflow-hidden h-[500px] relative z-0 shadow-2xl">
+    <div 
+      className="bg-[#313131] rounded-[24px] border border-orange-500/20 overflow-hidden relative z-0 shadow-2xl"
+      style={{ height }}
+    >
       {/* Overlay do Título */}
       <div className="absolute top-6 left-6 z-[1000] bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 pointer-events-none">
         <p className="text-white font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
@@ -24,54 +47,56 @@ export default function MapaFoco({ focos = [], onExpandir }) {
         </p>
       </div>
 
-      {/* Botão de Expandir */}
-      <button
-        onClick={onExpandir}
-        className="absolute bottom-6 right-6 z-[1000] bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-lg"
-      >
-        Expandir Mapa
-      </button>
+      {onExpandir && (
+        <button
+          onClick={onExpandir}
+          className="absolute bottom-6 right-6 z-[1000] bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all shadow-lg"
+        >
+          Expandir Mapa
+        </button>
+      )}
 
       <MapContainer
-        center={centerTiangua}
-        zoom={12}
-        zoomControl={false}
-        scrollWheelZoom={false}
-        dragging={false}
-        style={{ height: "100%", width: "100%", background: "#1A1A1A" }}
+        center={center}
+        zoom={zoom}
+        zoomControl={interactive}
+        scrollWheelZoom={interactive}
+        dragging={interactive}
+        style={{ height: "100%", width: "100%", background: "#1a1a1a" }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           attribution="&copy; CARCARÁ"
         />
 
-        {/* FILTRO DE SEGURANÇA: Só desenha se existir latitude e longitude */}
-        {focos &&
-          focos.length > 0 &&
-          focos.map((foco) => {
-            if (foco && foco.lat && foco.lon) {
-              return (
-                <Marker
-                  key={foco.id}
-                  position={[foco.lat, foco.lon]}
-                  icon={fireIcon}
-                >
-                  <Popup>
-                    <div className="text-center">
-                      <p className="font-bold text-orange-600 uppercase text-xs">
-                        {foco.nome}
-                      </p>
-                      <p className="text-[10px] text-zinc-500">
-                        {foco.relatos} relatos
-                      </p>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            }
-            return null; // Ignora focos inválidos e evita o erro "Invalid LatLng"
-          })}
+        <ChangeView center={center} zoom={zoom} />
+
+        {focos.map((foco) => (
+          foco.lat && foco.lon && (
+            <Marker
+              key={foco.id}
+              position={[foco.lat, foco.lon]}
+              icon={getIcon(foco.status)}
+            >
+              <Popup>
+                <div className="text-center font-sans space-y-2">
+                  <p className="font-bold text-orange-600 uppercase text-xs">{foco.titulo}</p>
+                  <p className="text-[10px] text-zinc-500">{foco.relatos} relatos</p>
+                  {onSelecionarAlerta && (
+                    <button 
+                      onClick={() => onSelecionarAlerta(foco.id)}
+                      className="bg-orange-600 text-white text-[9px] font-black px-3 py-1.5 rounded-md uppercase hover:bg-orange-700 transition-colors w-full mt-2"
+                    >
+                      Ver Detalhes
+                    </button>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          )
+        ))}
       </MapContainer>
     </div>
   );
 }
+

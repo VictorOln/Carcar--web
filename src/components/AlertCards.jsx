@@ -3,13 +3,13 @@ export default function AlertCards({
   value,
   icon,
   colorClass,
-  borderClass,
+  borderColor,
 }) {
   return (
     <div
-      className={`bg-[#313131] p-6 rounded-2xl flex flex-col justify-between h-44 border border-white/5 border-b-4 ${borderClass} transition-all`}
+      className={`bg-[#313131] p-6 rounded-2xl flex flex-col justify-between h-44 border border-white/5 border-b-4 ${borderColor} transition-all`}
     >
-      {/* Header: Título sempre BRANCO e Ícone COLORIDO */}
+
       <div className="flex items-center justify-between">
         <p className="text-white text-[11px] font-bold uppercase tracking-widest leading-none">
           {title}

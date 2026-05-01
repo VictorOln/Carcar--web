@@ -1,3 +1,5 @@
+import StatusBadge from "./StatusBadge";
+
 export default function CardMapaFoco({ foco, isActive, onClick }) {
   return (
     <div 
@@ -6,16 +8,20 @@ export default function CardMapaFoco({ foco, isActive, onClick }) {
         isActive ? 'border-orange-500 shadow-lg' : 'border-orange-500/10 hover:border-orange-500/30'
       }`}
     >
-      <div className="w-16 h-16 bg-[#D9D9D9] rounded-lg shrink-0" />
-      <div className="space-y-1">
-        <h4 className="text-white font-black text-sm uppercase italic">{foco.nome}</h4>
+      <div className="w-16 h-16 bg-[#D9D9D9] rounded-lg shrink-0 overflow-hidden border border-white/5 shadow-inner">
+        {foco.imagem ? (
+          <img src={foco.imagem} alt={foco.titulo} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-black/10 font-black text-[8px] uppercase">Sem Foto</div>
+        )}
+      </div>
+      <div className="flex-1 space-y-1">
+        <h4 className="text-white font-black text-sm uppercase italic">{foco.titulo}</h4>
         <p className="text-zinc-500 text-[9px] font-bold uppercase">Incêndio reportado</p>
-        <div className="flex items-center gap-2 text-zinc-400 text-[9px] font-bold">
+        <div className="flex items-center gap-2 text-zinc-400 text-[9px] font-bold pb-1">
            <span>👤 {foco.relatos} relatos</span>
         </div>
-        <span className="inline-block bg-[#FFD700] text-black text-[8px] font-black px-3 py-0.5 rounded-full uppercase">
-          {foco.status}
-        </span>
+        <StatusBadge status={foco.status} />
       </div>
     </div>
   );
